@@ -27,6 +27,7 @@
         .navbar {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
             background: white;
             padding: 15px;
@@ -35,27 +36,46 @@
             margin-bottom: 20px;
         }
 
-        .navbar a {
+        .navbar-brand {
+            font-weight: bold;
+            color: #4b3ec4;
+            margin-right: auto;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar a.nav-link {
             text-decoration: none;
             color: #666;
             font-size: 14px;
             font-weight: 500;
             padding: 5px 10px;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
-        .navbar a.active, .navbar a:hover {
+        .navbar a.nav-link.active, .navbar a.nav-link:hover {
             color: #5c51da;
             border-bottom: 2px solid #5c51da;
         }
 
-        /* ตารางเรียน */
-        .schedule-section {
-            background: transparent;
-            padding: 10px 0;
+        /* ส่วนเนื้อหาแต่ละหน้า */
+        .tab-content {
+            display: none; /* ซ่อนหน้าอื่นไว้ก่อน */
+            animation: fadeIn 0.3s ease;
         }
 
-        .schedule-section h2 {
+        .tab-content.active {
+            display: block; /* แสดงเฉพาะหน้าที่มีคลาส active */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* สไตล์ตารางเรียน */
+        .page-title {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 15px;
@@ -85,6 +105,17 @@
             border-bottom: 1px solid #edf2f7;
             font-size: 14px;
             color: #4a5568;
+        }
+
+        /* ส่วนกล่องและข้อมูลหน้าน่ารักๆ สำหรับหน้าอื่น */
+        .card-placeholder {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            text-align: center;
+            color: #718096;
+            font-size: 15px;
         }
 
         /* ปุ่มกด */
@@ -154,18 +185,24 @@
 
 <div class="container">
     <div class="navbar">
-        <a href="#" style="font-weight: bold; color: #4b3ec4; margin-right: auto;">Student Support Hub</a>
-        <a href="#">หน้าแรก</a>
-        <a href="#" class="active">ตารางเรียน</a>
-        <a href="#">การบ้าน</a>
-        <a href="#">กิจกรรม</a>
-        <a href="#">การเข้าเรียน</a>
-        <a href="#">วันหยุด</a>
+        <a class="navbar-brand" onclick="switchTab('home')">Student Support Hub</a>
+        <a class="nav-link" id="nav-home" onclick="switchTab('home')">หน้าแรก</a>
+        <a class="nav-link active" id="nav-schedule" onclick="switchTab('schedule')">ตารางเรียน</a>
+        <a class="nav-link" id="nav-homework" onclick="switchTab('homework')">การบ้าน</a>
+        <a class="nav-link" id="nav-activities" onclick="switchTab('activities')">กิจกรรม</a>
+        <a class="nav-link" id="nav-attendance" onclick="switchTab('attendance')">การเข้าเรียน</a>
+        <a class="nav-link" id="nav-holidays" onclick="switchTab('holidays')">วันหยุด</a>
     </div>
 
-    <div class="schedule-section">
-        <h2>ตารางเรียน</h2>
-        
+    <div id="content-home" class="tab-content">
+        <div class="card-placeholder">
+            <h3>ยินดีต้อนรับสู่ Student Support Hub</h3>
+            <p>ระบบจัดการและสนับสนุนข้อมูลสำหรับนักศึกษาสาขาเทคโนโลยีดิจิทัล</p>
+        </div>
+    </div>
+
+    <div id="content-schedule" class="tab-content active">
+        <div class="page-title">ตารางเรียน</div>
         <table id="scheduleTable">
             <thead>
                 <tr>
@@ -219,6 +256,34 @@
         </div>
     </div>
 
+    <div id="content-homework" class="tab-content">
+        <div class="card-placeholder">
+            <h3>รายการการบ้าน (Homework)</h3>
+            <p>ยังไม่มีรายการการบ้านค้างในขณะนี้</p>
+        </div>
+    </div>
+
+    <div id="content-activities" class="tab-content">
+        <div class="card-placeholder">
+            <h3>กิจกรรมสาขา (Activities)</h3>
+            <p>ติดตามข่าวกิจกรรมและตารางงานนิทรรศการได้ที่นี่เร็วๆ นี้</p>
+        </div>
+    </div>
+
+    <div id="content-attendance" class="tab-content">
+        <div class="card-placeholder">
+            <h3>เช็กชื่อเข้าเรียน (Attendance)</h3>
+            <p>ระบบบันทึกเวลาเรียนและจำนวนสิทธิ์การขาดลา</p>
+        </div>
+    </div>
+
+    <div id="content-holidays" class="tab-content">
+        <div class="card-placeholder">
+            <h3>ปฏิทินวันหยุด (Holidays)</h3>
+            <p>ตรวจสอบวันหยุดประจำภาคเรียนและวันหยุดราชการ</p>
+        </div>
+    </div>
+
     <div class="footer">
         <div class="footer-brand">Student Support Hub</div>
         <div>โครงการวิชาชีพสาขาเทคโนโลยีดิจิทัล</div>
@@ -227,6 +292,27 @@
 </div>
 
 <script>
+    // 1. ระบบเก่า: ฟังชันสลับหน้าแท็บ (Tabs Navigation)
+    function switchTab(tabName) {
+        // ซ่อนเนื้อหาทุกหน้า
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        // เอาสีไฮไลท์ออกจากปุ่มเมนูทั้งหมด
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => link.classList.remove('active'));
+
+        // เปิดแสดงเนื้อหาหน้าทีเลือก
+        document.getElementById(`content-${tabName}`).classList.add('active');
+
+        // ใส่สีไฮไลท์ที่ปุ่มเมนูที่ถูกเลือก
+        const activeNav = document.getElementById(`nav-${tabName}`);
+        if(activeNav) {
+            activeNav.classList.add('active');
+        }
+    }
+
+    // 2. ระบบใหม่: แก้ไขตารางเรียน
     let isEditing = false;
 
     function toggleEdit() {
@@ -237,7 +323,6 @@
         isEditing = !isEditing;
 
         if (isEditing) {
-            // สลับเป็นโหมดแก้ไข: เปลี่ยนข้อความในตารางเป็นกล่องข้อความ (Input) ให้พิมพ์ได้
             cells.forEach(cell => {
                 const originalText = cell.innerText;
                 cell.innerHTML = `<input type="text" value="${originalText}">`;
@@ -245,8 +330,17 @@
             editBtn.innerHTML = '❌ ยกเลิก';
             saveBtn.style.display = 'block';
         } else {
-            // ถ้ายกเลิก ให้รีเฟรชหน้าเว็บกลับเป็นค่าเดิม
-            location.reload();
+            // ดึงข้อมูลเดิมกลับมาด้วยการคืนสถานะแผงปกติ
+            switchTab('schedule');
+            // ทำการคืนค่าข้อความในกรณีที่ผู้ใช้กดยกเลิก
+            cells.forEach(cell => {
+                const input = cell.querySelector('input');
+                if (input) {
+                    cell.innerText = input.defaultValue;
+                }
+            });
+            editBtn.innerHTML = '✏️ แก้ไขตารางเรียน';
+            saveBtn.style.display = 'none';
         }
     }
 
@@ -255,7 +349,6 @@
         const editBtn = document.getElementById('editBtn');
         const saveBtn = document.getElementById('saveBtn');
 
-        // ดึงค่าจากช่องพิมพ์กลับมาใส่ในตารางปกติ
         cells.forEach(cell => {
             const input = cell.querySelector('input');
             if (input) {
