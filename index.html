@@ -138,8 +138,7 @@
     transition: background 0.15s;
   }
   .btn-sm:hover { background: var(--bg-secondary); }
-  
-  /* ปุ่มบันทึกเพิ่มเติม */
+
   .btn-save-schedule {
     background: var(--purple);
     color: #fff;
@@ -317,7 +316,7 @@
       <div class="dash-card">
         <div class="icon" style="background:#EEEDFE;">📚</div>
         <h3 style="color:var(--purple-dark);">ตารางเรียนวันนี้</h3>
-        <p id="dash-schedule">เทคโนโลยีธุรกิจดิจิทัล — 09:00<br>Web Design — 13:00</p>
+        <p id="dash-schedule">Business Technology — 09:00<br>Web Design — 13:00</p>
       </div>
       <div class="dash-card">
         <div class="icon" style="background:var(--amber-light);">📝</div>
@@ -483,11 +482,18 @@
 </footer>
  
 <script>
+// แก้ไขฟังก์ชันให้ชื่อตรงกัน เพื่อเปิด-ปิด หน้าเว็บได้อย่างถูกต้อง
 function showPage(id, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (el) el.classList.add('active');
+  
+  const targetPage = document.getElementById(id);
+  if (targetPage) {
+    targetPage.classList.add('active');
+  }
+  if (el) {
+    el.classList.add('active');
+  }
 }
  
 function toggleHW(card) {
@@ -505,7 +511,7 @@ function toggleHW(card) {
   }
 }
 
-// === ส่วนของโค้ดใหม่: ระบบแก้ไขและบันทึกตารางเรียน ===
+// === ระบบแก้ไขและบันทึกตารางเรียน ===
 let isEditing = false;
 
 function toggleEditSchedule() {
@@ -516,7 +522,6 @@ function toggleEditSchedule() {
   isEditing = !isEditing;
 
   if (isEditing) {
-    // สลับเป็นโหมดแก้ไข: เปลี่ยนข้อความในช่องให้กลายเป็นกล่องข้อความพิมพ์ <input>
     cells.forEach(cell => {
       const originalText = cell.innerText;
       cell.innerHTML = `<input type="text" value="${originalText}">`;
@@ -524,7 +529,6 @@ function toggleEditSchedule() {
     editBtn.innerHTML = '❌ ยกเลิก';
     saveBtn.style.display = 'inline-flex';
   } else {
-    // กดยกเลิก ให้ดึงค่าเดิมกลับมาโดยไม่ต้องรีโหลดหน้า
     cells.forEach(cell => {
       const input = cell.querySelector('input');
       if (input) {
@@ -541,7 +545,6 @@ function saveScheduleData() {
   const editBtn = document.getElementById('editBtn');
   const saveBtn = document.getElementById('saveBtn');
 
-  // เซฟค่าใหม่ที่พิมพ์จาก Input ลงตารางจริง
   cells.forEach(cell => {
     const input = cell.querySelector('input');
     if (input) {
@@ -549,16 +552,18 @@ function saveScheduleData() {
     }
   });
 
-  // อัปเดตข้อความตารางเรียนวันนี้ในหน้าแรก (Dashboard) ให้เปลี่ยนตามอัตโนมัติ
+  // ซิงค์ข้อมูลอัปเดตไปที่ Dashboard หน้าแรก
   const rows = document.querySelectorAll('#scheduleTable tbody tr');
   let mondaySubject = rows[0].cells[1].innerText;
   let mondayTime = rows[0].cells[2].innerText;
   let tuesdaySubject = rows[1].cells[1].innerText;
   let tuesdayTime = rows[1].cells[2].innerText;
   
-  document.getElementById('dash-schedule').innerHTML = `${mondaySubject} — ${mondayTime}<br>${tuesdaySubject} — ${tuesdayTime}`;
+  const dashSchedule = document.getElementById('dash-schedule');
+  if (dashSchedule) {
+    dashSchedule.innerHTML = `${mondaySubject} — ${mondayTime}<br>${tuesdaySubject} — ${tuesdayTime}`;
+  }
 
-  // ปิดโหมดแก้ไขกลับมาเป็นตารางปกติ
   isEditing = false;
   editBtn.innerHTML = '✏️ แก้ไขตารางเรียน';
   saveBtn.style.display = 'none';
